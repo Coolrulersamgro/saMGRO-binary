@@ -21,6 +21,18 @@
 
 New accounts are assigned $10,000 virtual funds. Registration requires a name, valid email and password of at least 10 characters.
 
+## Deploy on Render (demo deployment)
+
+Create a **Web Service** from this repository with runtime **Node**, build command `npm install`, and start command `npm start`. Add these environment variables:
+
+- `NODE_ENV=production`
+- `SESSION_SECRET` = a long, random secret of at least 32 characters
+- `DATA_DIR=/var/data`
+
+Attach a persistent disk to the service at mount path `/var/data` before allowing users to create accounts. The app stores both the SQLite database and session database in `DATA_DIR`; without a persistent disk, user accounts, trades and sessions can be lost when the service restarts or redeploys. Keep one service instance when using SQLite; do not scale this SQLite setup horizontally. Configure the Render health check path as `/healthz`.
+
+This is still a demo deployment, not a production-ready real-money trading service. Review the security and operational requirements below before inviting public users.
+
 ## Administrator access (local development only)
 1. Register your own account.
 2. Stop the server and open `data/samgro-binary.sqlite` with a SQLite database viewer.
