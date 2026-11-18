@@ -41,10 +41,10 @@ app.post('/api/auth/forgot-password',resetLimit,async(req,res)=>{
   const expiresAt=Date.now()+30*60*1000;
   db.prepare('DELETE FROM password_resets WHERE user_id=?').run(user.id);
   db.prepare('INSERT INTO password_resets(user_id,token_hash,expires_at) VALUES(?,?,?)').run(user.id,tokenHash,expiresAt);
-  const base=(process.env.PUBLIC_APP_URL||`${req.protocol}://${req.get('host')}`).replace(/\\/$/,'');
+  const base=(process.env.PUBLIC_APP_URL||`${req.protocol}://${req.get('host')}`).replace(/\/+$/,'');
   const resetUrl=`${base}/?resetToken=${token}`;
   try{
-    const mail=await fetch('https://api.resend.com/emails',{method:'POST',headers:{Authorization:`Bearer ${process.env.RESEND_API_KEY}`,'Content-Type':'application/json'},body:JSON.stringify({from:process.env.MAIL_FROM,to:[email],subject:'Reset your saMGRO Binary password',text:`Use this link to reset your password within 30 minutes: ${resetUrl}\\n\\nIf you did not request this, ignore this email.`})});
+    const mail=await fetch('https://api.resend.com/emails',{method:'POST',headers:{Authorization:`Bearer ${process.env.RESEND_API_KEY}`,'Content-Type':'application/json'},body:JSON.stringify({from:process.env.MAIL_FROM,to:[email],subject:'Reset your saMGRO Binary password',text:`Use this link to reset your password within 30 minutes: ${resetUrl}\n\nIf you did not request this, ignore this email.`})});
     if(!mail.ok)throw new Error('Email provider rejected the request');
     res.json({message:generic});
   }catch(err){db.prepare('DELETE FROM password_resets WHERE user_id=?').run(user.id);res.status(502).json({error:'Could not send the reset email. Please try again later.'});}
