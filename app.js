@@ -15,6 +15,7 @@ $('tradeForm').addEventListener('submit',async e=>{e.preventDefault();try{const 
 $('historyTable').addEventListener('click',async e=>{const b=e.target.closest('.close-position');if(!b)return;try{const r=await api('/api/trades/'+b.dataset.id+'/close',{method:'POST',body:'{}'});$('message').textContent=r.message+' P/L '+cash(r.pl);await sync()}catch(err){alert(err.message)}});
 $('marketTable').addEventListener('click',e=>{const b=e.target.closest('[data-pair]');if(!b)return;$('pair').value=b.dataset.pair;updatePreview();show('trade')});
 $('chartPair').addEventListener('change',e=>{$('chartPrice').textContent=fmt(quotes[e.target.value])});
+$('chartPrice').textContent=fmt(quotes[$('chartPair').value]);
 $('reset').disabled=true;$('reset').title='Reset is disabled for individual multi-user accounts.';
 $('realInfo').onclick=$('requirements').onclick=()=> $('modal').classList.remove('hide');$('close').onclick=$('ok').onclick=()=> $('modal').classList.add('hide');
 updatePreview();
