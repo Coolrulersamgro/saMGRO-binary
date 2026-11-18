@@ -31,7 +31,7 @@ app.post('/api/auth/login',authLimit,async(req,res)=>{const email=String(req.bod
 const resetLimit=rateLimit({windowMs:60*60*1000,limit:5,standardHeaders:true,legacyHeaders:false});
 app.post('/api/auth/forgot-password',resetLimit,async(req,res)=>{
   const email=String(req.body.email||'').trim().toLowerCase();
-  if(!/^\\S+@\\S+\\.\\S+$/.test(email)||email.length>160)return res.status(400).json({error:'Enter a valid email address.'});
+  if(!/^\S+@\S+\.\S+$/.test(email)||email.length>160)return res.status(400).json({error:'Enter a valid email address.'});
   const generic='If an account exists for that email, a password reset link will be sent shortly.';
   const user=db.prepare('SELECT id FROM users WHERE email=?').get(email);
   if(!user)return res.json({message:generic});
